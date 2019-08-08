@@ -1,5 +1,6 @@
 package mn.data.controller;
 
+import com.sun.istack.Nullable;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
@@ -8,10 +9,12 @@ import mn.data.repository.AbstractEmployeeRepository;
 import mn.data.repository.EmployeeRepository;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller("/employees")
 public class EmployeeController
@@ -40,12 +43,44 @@ public class EmployeeController
         return HttpResponse.ok(found);
     }
 
+    @Get("/findBy{?firstName,active}")
+    public HttpResponse<List<Employee>> getFindBy(@QueryValue Optional<String> firstName, @QueryValue Optional<Boolean> active) {
+        if ((firstName.isEmpty() && active.isEmpty()) || (firstName.isPresent() && active.isPresent())) {
+            return HttpResponse.badRequest();
+        }
+        else if (firstName.isPresent()) {
+           List<Employee> employees = employeeRepository.findByFirstName(firstName.get());
+            if (employees == null) {
+                return HttpResponse.notFound();
+            }
+            return HttpResponse.ok(employees);
+        }
+        else {
+            List<Employee> employees = employeeRepository.findByActive(active.get());
+            if (employees == null) {
+                return HttpResponse.notFound();
+            }
+            return HttpResponse.ok(employees);
+        }
+    }
+
     @Put("/")
+    @Transactional(value = Transactional.TxType.REQUIRED)
     public HttpResponse create(@Body @Valid Employee employee) {
-        Employee origEmployee = abstractEmployeeRepository.update(employee);
+
+        Employee origEmployee = employeeRepository.findById(employee.getId()).orElse(null);
+        if (origEmployee == null) {
+            return HttpResponse.notFound();
+        }
+        origEmployee.setTitle(employee.getTitle());
+        origEmployee.setFirstName(employee.getFirstName());
+        origEmployee.setLastName(employee.getLastName());
+        origEmployee.setStartDate(employee.getStartDate());
+        origEmployee.setActive(employee.isActive());
+        origEmployee = employeeRepository.save(origEmployee);
         return HttpResponse
             .noContent()
-            .header(HttpHeaders.LOCATION, toUri(employee).getPath());
+            .header(HttpHeaders.LOCATION, toUri(origEmployee).getPath());
     }
 
     @Post("/")
@@ -58,6 +93,7 @@ public class EmployeeController
     }
 
     @Delete("/{id}")
+    @Transactional(value = Transactional.TxType.REQUIRED)
     public HttpResponse<Employee> delete(Long id) {
         Employee found = employeeRepository.findById(id).orElse(null);
         if (found == null) {
@@ -70,6 +106,4 @@ public class EmployeeController
     private URI toUri(Employee employee) {
         return URI.create("/employee/" + employee.getId());
     }
-
-
 }
