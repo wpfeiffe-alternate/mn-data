@@ -7,7 +7,6 @@ import mn.data.domain.Employee;
 import mn.data.repository.AbstractEmployeeRepository;
 import mn.data.repository.EmployeeRepository;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
@@ -21,7 +20,6 @@ public class EmployeeController
     private final EmployeeRepository employeeRepository;
     private final AbstractEmployeeRepository abstractEmployeeRepository;
 
-    @Inject
     public EmployeeController(AbstractEmployeeRepository abstractEmployeeRepository, EmployeeRepository employeeRepository)
     {
         this.abstractEmployeeRepository = abstractEmployeeRepository;

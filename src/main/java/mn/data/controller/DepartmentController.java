@@ -7,7 +7,6 @@ import io.micronaut.http.annotation.*;
 import mn.data.domain.Department;
 import mn.data.repository.DepartmentRepository;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
@@ -19,7 +18,6 @@ public class DepartmentController
 {
     private final DepartmentRepository departmentRepository;
 
-    @Inject
     public DepartmentController(DepartmentRepository departmentRepository)
     {
         this.departmentRepository = departmentRepository;
