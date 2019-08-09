@@ -135,14 +135,15 @@
 					"raw": "{\n    \"id\": 1,\n    \"firstName\": \"Karen\",\n    \"lastName\": \"Thomas3\",\n    \"active\": true,\n    \"startDate\": [\n        2012,\n        5,\n        30\n    ],\n    \"title\": \"Business Analyst\",\n    \"department\": {\n        \"id\": 5,\n        \"deptCode\": \"PROD\",\n        \"deptName\": \"Product\",\n        \"company\": {\n            \"id\": 1,\n            \"companyName\": \"BPCS Services\"\n        }\n    }\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/employees",
+					"raw": "http://localhost:8080/employees/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"employees"
+						"employees",
+						"1"
 					]
 				}
 			},

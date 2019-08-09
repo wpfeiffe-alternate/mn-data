@@ -36,11 +36,13 @@ public class CompanyController
         return HttpResponse.ok(found);
     }
 
-    @Put("/")
+    @Put("/{id}")
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public HttpResponse create(@Body @Valid Company company) {
-
-        Company origCompany = companyRepository.findById(company.getId()).orElse(null);
+    public HttpResponse update(Long id, @Body @Valid Company company) {
+        if (company.getId() == null || !company.getId().equals(id)) {
+            return HttpResponse.badRequest();
+        }
+        Company origCompany = companyRepository.findById(id).orElse(null);
         if (origCompany == null) {
             return HttpResponse.notFound();
         }
@@ -52,7 +54,7 @@ public class CompanyController
     }
 
     @Post("/")
-    public HttpResponse update(@Body @Valid Company company) {
+    public HttpResponse create(@Body @Valid Company company) {
         assert company.getId() == null;
         final Company updated = companyRepository.save(company);
         return HttpResponse

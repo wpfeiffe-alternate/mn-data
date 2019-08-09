@@ -61,11 +61,13 @@ public class EmployeeController
         }
     }
 
-    @Put("/")
+    @Put("/{id}")
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public HttpResponse create(@Body @Valid Employee employee) {
-
-        Employee origEmployee = employeeRepository.findById(employee.getId()).orElse(null);
+    public HttpResponse update(Long id, @Body @Valid Employee employee) {
+        if (employee.getId() == null || !employee.getId().equals(id)) {
+            return HttpResponse.badRequest();
+        }
+        Employee origEmployee = employeeRepository.findById(id).orElse(null);
         if (origEmployee == null) {
             return HttpResponse.notFound();
         }
@@ -81,7 +83,7 @@ public class EmployeeController
     }
 
     @Post("/")
-    public HttpResponse update(@Body @Valid Employee employee) {
+    public HttpResponse create(@Body @Valid Employee employee) {
         assert employee.getId() == null;
         final Employee updated = employeeRepository.save(employee);
         return HttpResponse

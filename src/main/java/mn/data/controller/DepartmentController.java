@@ -49,11 +49,13 @@ public class DepartmentController
 
 
 
-    @Put("/")
+    @Put("/{id}")
     @Transactional(value = Transactional.TxType.REQUIRED)
-    public HttpResponse create(@Body @Valid Department department) {
-
-        Department origDepartment = departmentRepository.findById(department.getId()).orElse(null);
+    public HttpResponse update(Long id, @Body @Valid Department department) {
+         if (department.getId() == null || !department.getId().equals(id)) {
+            return HttpResponse.badRequest();
+        }
+        Department origDepartment = departmentRepository.findById(id).orElse(null);
         if (origDepartment == null) {
             return HttpResponse.notFound();
         }
@@ -66,7 +68,7 @@ public class DepartmentController
     }
 
     @Post("/")
-    public HttpResponse update(@Body @Valid Department department) {
+    public HttpResponse create(@Body @Valid Department department) {
         assert department.getId() == null;
         final Department updated = departmentRepository.save(department);
         return HttpResponse
