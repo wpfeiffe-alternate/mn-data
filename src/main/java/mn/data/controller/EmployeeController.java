@@ -1,6 +1,5 @@
 package mn.data.controller;
 
-import com.sun.istack.Nullable;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.*;
