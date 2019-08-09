@@ -6,7 +6,6 @@ import io.micronaut.http.annotation.*;
 import mn.data.domain.Company;
 import mn.data.repository.CompanyRepository;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
@@ -18,7 +17,6 @@ public class CompanyController
 {
     private final CompanyRepository companyRepository;
 
-    @Inject
     public CompanyController(CompanyRepository companyRepository)
     {
         this.companyRepository = companyRepository;
